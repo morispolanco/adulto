@@ -1,8 +1,10 @@
 import streamlit as st
 
-# Inicializar el estado de la sesión para almacenar mensajes
+# Inicializar el estado de la sesión para almacenar mensajes y mensaje_nuevo
 if 'mensajes' not in st.session_state:
-    st.session_state.mensajes = []
+    st.session_state['mensajes'] = []
+if 'mensaje_nuevo' not in st.session_state:
+    st.session_state['mensaje_nuevo'] = ""
 
 # Título de la aplicación
 st.title("Conectando a Adultos Mayores 🤝")
@@ -32,7 +34,7 @@ for interes in intereses_seleccionados:
     actividades = st.multiselect(
         f"Selecciona actividades en **{interes}**:",
         options=grupos_interes[interes],
-        key=interes  # Clave única para cada multiselect
+        key=f"actividad_{interes}"  # Clave única para cada multiselect
     )
     actividades_seleccionadas.extend(actividades)
 
@@ -49,7 +51,7 @@ st.markdown("---")
 st.header("Chatea con tu Familia y Amigos 💬")
 
 # Mostrar historial de mensajes
-for msg in st.session_state.mensajes:
+for msg in st.session_state['mensajes']:
     st.write(f"**{msg['nombre']}**: {msg['mensaje']}")
 
 # Entrada para un nuevo mensaje
@@ -62,7 +64,7 @@ if st.button("Enviar", key="enviar_mensaje"):
     elif mensaje_nuevo.strip() == "":
         st.error("El mensaje no puede estar vacío.")
     else:
-        st.session_state.mensajes.append({"nombre": nombre, "mensaje": mensaje_nuevo})
+        st.session_state['mensajes'].append({"nombre": nombre, "mensaje": mensaje_nuevo})
         st.success("Mensaje enviado!")
         # Limpiar el campo de texto después de enviar
-        st.session_state.mensaje_nuevo = ""
+        st.session_state['mensaje_nuevo'] = ""
